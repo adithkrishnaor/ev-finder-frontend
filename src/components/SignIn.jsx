@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
 
@@ -14,6 +15,8 @@ const SignIn = () => {
         setData({ ...data, [event.target.name]: event.target.value });
     };
 
+    const navigate = useNavigate()
+    
     const readValue = () => {
 
         axios.post("http://localhost:8080/signin", data).then(
@@ -36,7 +39,7 @@ const SignIn = () => {
                     sessionStorage.setItem("token", token)
                     sessionStorage.setItem("userId", userId)
 
-
+                    navigate('/home')
                 }
             }
         ).catch(
