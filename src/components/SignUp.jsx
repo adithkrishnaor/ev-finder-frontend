@@ -19,10 +19,48 @@ const SignUp = () => {
         setData({ ...data, [event.target.name]: event.target.value })
     }
 
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const validatePhoneNumber = (phone) => {
+        const re = /^\d{10}$/; // Example: Validates a 10-digit phone number
+        return re.test(phone);
+    };
+
+
+    const validateDOB = (dob) => {
+        const today = new Date();
+        const birthDate = new Date(dob);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age >= 18; // Example: User must be at least 18 years old
+    };
+
+
     const readValue = () => {
 
         if (!data.name || !data.email || !data.phone || !data.dob || !data.gender || !data.password || !data.cpass) {
             alert('Please fill in all fields.');
+            return;
+        }
+
+        if (!validateEmail(data.email)) {
+            alert('Please enter a valid email address.');
+            return;
+        }
+
+        if (!validatePhoneNumber(data.phone)) {
+            alert('Please enter a valid 10-digit phone number.');
+            return;
+        }
+
+        if (!validateDOB(data.dob)) {
+            alert('You must be at least 18 years old.');
             return;
         }
 
@@ -76,11 +114,11 @@ const SignUp = () => {
                                 <div className="row g-3">
                                     <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                                         <label htmlFor="" className="form-label">Full Name</label>
-                                        <input type="text" className="form-control" name='name' value={data.name} onChange={inputHandler} />
+                                        <input type="text" className="form-control" name='name' value={data.name} onChange={inputHandler} maxLength={25}/>
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Email</label>
-                                        <input type="text" className="form-control" name='email' value={data.email} onChange={inputHandler} />
+                                        <input type="text" className="form-control" name='email' value={data.email} onChange={inputHandler} maxLength={30} />
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Phone Number</label>
@@ -101,11 +139,11 @@ const SignUp = () => {
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Password</label>
-                                        <input type="password" className="form-control" name='password' value={data.password} onChange={inputHandler} />
+                                        <input type="password" className="form-control" name='password' value={data.password} onChange={inputHandler} maxLength={25} />
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Confirm Password</label>
-                                        <input type="password" className="form-control" name='cpass' value={data.cpass} onChange={inputHandler} />
+                                        <input type="password" className="form-control" name='cpass' value={data.cpass} onChange={inputHandler} maxLength={25}/>
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                                         <center>
