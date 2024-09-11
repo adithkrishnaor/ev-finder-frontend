@@ -114,19 +114,32 @@ const SignUp = () => {
                                 <div className="row g-3">
                                     <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                                         <label htmlFor="" className="form-label">Full Name</label>
-                                        <input type="text" className="form-control" name='name' value={data.name} onChange={inputHandler} maxLength={25}/>
+                                        <input type="text" className="form-control" name='name'
+                                            value={data.name}
+                                            onChange={inputHandler}
+                                            maxLength={25} />
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Email</label>
-                                        <input type="text" className="form-control" name='email' value={data.email} onChange={inputHandler} maxLength={30} />
+                                        <input type="text" className="form-control" name='email'
+                                            value={data.email}
+                                            onChange={inputHandler}
+                                            maxLength={30} />
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Phone Number</label>
-                                        <input type="number" className="form-control" name='phone' value={data.phone} onChange={inputHandler} />
+                                        <input type="number" className="form-control" name='phone'
+                                            value={data.phone}
+                                            onChange={inputHandler} />
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Date of Birth</label>
-                                        <input type="date" className="form-control" name='dob' value={data.dob} onChange={inputHandler} />
+                                        <input type="date" className="form-control" name='dob'
+                                            value={data.dob}
+                                            onChange={inputHandler}
+                                            max={new Date().toISOString().split('T')[0]}
+
+                                        />
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Gender</label>
@@ -139,11 +152,17 @@ const SignUp = () => {
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Password</label>
-                                        <input type="password" className="form-control" name='password' value={data.password} onChange={inputHandler} maxLength={25} />
+                                        <input type="password" className="form-control" name='password' value={data.password}
+                                            onChange={inputHandler}
+                                            maxLength={25}
+                                        />
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                                         <label htmlFor="" className="form-label">Confirm Password</label>
-                                        <input type="password" className="form-control" name='cpass' value={data.cpass} onChange={inputHandler} maxLength={25}/>
+                                        <input type="password" className="form-control" name='cpass' value={data.cpass}
+                                            onChange={inputHandler}
+                                            maxLength={25}
+                                        />
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                                         <center>
