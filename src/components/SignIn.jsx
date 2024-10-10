@@ -76,7 +76,6 @@ const SignIn = () => {
                                     <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                                         <center>
                                             <Link to="/signup">New user, Sign Up</Link>
-                                            <a href="/map">Map</a>
                                         </center>
                                     </div>
                                 </div>
