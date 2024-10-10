@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import Navbar from './Navbar';
 
 // Fix for default marker icon (same as before)
 delete L.Icon.Default.prototype._getIconUrl;
@@ -79,7 +80,9 @@ const MapScreen = () => {
   ];
 
   return (
-    <div style={{ height: '100vh', width: '100vw' }}>
+    
+    <div style={{ height: '94vh', width: '100vw' }}>
+    <Navbar/>
       <MapContainer 
         center={[51.505, -0.09]} 
         zoom={13} 

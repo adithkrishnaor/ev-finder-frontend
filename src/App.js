@@ -11,10 +11,10 @@ function App() {
 
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<SignIn />} />
+        <Route path='/' element={<HomePage />} />
+        <Route path='/signin' element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
-        <Route path='/home' element={<HomePage />} />
-        <Route path='/map' element={<MapScreen/>} />
+        <Route path='/map' element={<MapScreen />} />
       </Routes>
     </BrowserRouter>
 
