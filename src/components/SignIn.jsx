@@ -36,10 +36,10 @@ const SignIn = () => {
                     console.log(token)
                     console.log(userId)
 
-                    sessionStorage.setItem("token", token)
-                    sessionStorage.setItem("userId", userId)
+                    localStorage.setItem("token", token)
+                    localStorage.setItem("userId", userId)
 
-                    navigate('/home')
+                    navigate('/map')
                 }
             }
         ).catch(
