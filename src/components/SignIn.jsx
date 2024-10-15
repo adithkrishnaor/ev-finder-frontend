@@ -34,9 +34,9 @@ const SignIn = () => {
                     let userId = response.data.userId
 
                     console.log(token)
-                    console.log(userId)
+                    console.log(userId)                    
 
-                    localStorage.setItem("token", token)
+                    localStorage.setItem("token",token)
                     localStorage.setItem("userId", userId)
 
                     navigate('/map')
