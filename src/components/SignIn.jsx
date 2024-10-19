@@ -6,8 +6,8 @@ const SignIn = () => {
 
     const [data, setData] = new useState(
         {
-            "email": "",
-            "password": ""
+            email: "",
+            password: ""
         }
     )
 
@@ -58,7 +58,7 @@ const SignIn = () => {
                     <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12  d-flex justify-content-center">
                         <div className="card w-50 border-rounded border-secondary shadow-sm">
                             <div className="card-body p-4">
-                                <h2 className="card-title text-center mb-4">Login</h2>
+                                <h2 className="card-title text-center mb-4">User Login</h2>
                                 <div className="row g-3">
                                     <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                                         <label htmlFor="email" className="form-label">Email</label>
@@ -75,7 +75,7 @@ const SignIn = () => {
                                     </div>
                                     <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                                         <center>
-                                            <Link to="/signup">New user, Sign Up</Link>
+                                            <Link to="/signup">Don't have an account? Sign Up</Link>
                                         </center>
                                     </div>
                                 </div>

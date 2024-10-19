@@ -111,7 +111,7 @@ const SignUp = () => {
                     <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 d-flex justify-content-center">
                         <div className="card w-50 border-rounded border-secondary shadow-sm">
                             <div className="card-body p-4">
-                                <h2 className="card-title text-center mb-4">Sign Up</h2>
+                                <h2 className="card-title text-center mb-4">User Sign Up</h2>
                                 <div className="row g-3">
                                     <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                                         <label htmlFor="" className="form-label">Full Name</label>
@@ -172,7 +172,7 @@ const SignUp = () => {
                                     </div>
                                     <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                                         <center>
-                                            <Link to="/signin">Existing user Login Page</Link>
+                                            <Link to="/signin">Existing user? Login Here</Link>
                                         </center>
                                     </div>
                                 </div>
