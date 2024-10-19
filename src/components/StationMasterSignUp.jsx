@@ -208,7 +208,7 @@ const StationMasterSignUp = () => {
                   </div>
                   <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                     <center>
-                      <Link to="/signin">Existing user? Login Here</Link>
+                      <Link to="/stationLogin">Existing user? Login Here</Link>
                     </center>
                   </div>
                 </div>

@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import MapScreen from "./components/MapScreen";
 import StationMasterSignUp from "./components/StationMasterSignUp";
+import StationMasterLogin from "./components/StationMasterLogin";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/map" element={<MapScreen />} />
         <Route path="/stationSignUp" element={<StationMasterSignUp />} />
+        <Route path="/stationLogin" element={<StationMasterLogin />} />
       </Routes>
     </BrowserRouter>
   );

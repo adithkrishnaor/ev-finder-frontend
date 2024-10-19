@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const SignIn = () => {
+const StationMasterLogin = () => {
   const [data, setData] = new useState({
     email: "",
     password: "",
@@ -16,7 +16,7 @@ const SignIn = () => {
 
   const readValue = () => {
     axios
-      .post("http://localhost:8080/signin", data)
+      .post("http://localhost:8080/stationLogin", data)
       .then((response) => {
         console.log(response.data);
         if (response.data.status == "Invalid Email") {
@@ -39,8 +39,6 @@ const SignIn = () => {
       .catch((error) => {
         console.log(error);
       });
-
-    console.log(data);
   };
 
   return (
@@ -50,18 +48,19 @@ const SignIn = () => {
           <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12  d-flex justify-content-center">
             <div className="card w-50 border-rounded border-secondary shadow-sm">
               <div className="card-body p-4">
-                <h2 className="card-title text-center mb-4">User Login</h2>
+                <h2 className="card-title text-center mb-4">
+                  Station Master Login
+                </h2>
                 <div className="row g-3">
                   <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                     <label htmlFor="email" className="form-label">
-                      Email
+                      Email address
                     </label>
                     <input
                       type="email"
                       className="form-control"
                       id="email"
                       name="email"
-                      placeholder="Enter the email"
                       value={data.email}
                       onChange={inputHandler}
                     />
@@ -75,7 +74,6 @@ const SignIn = () => {
                       className="form-control"
                       id="password"
                       name="password"
-                      placeholder="Enter the password"
                       value={data.password}
                       onChange={inputHandler}
                     />
@@ -83,7 +81,8 @@ const SignIn = () => {
                   <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                     <center>
                       <button
-                        className="btn btn-success w-50"
+                        type="button"
+                        className="btn btn-primary"
                         onClick={readValue}
                       >
                         Login
@@ -92,7 +91,9 @@ const SignIn = () => {
                   </div>
                   <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                     <center>
-                      <Link to="/signup">Don't have an account? Sign Up</Link>
+                      <Link to="/stationSignUp">
+                        Don't have an account? Sign Up
+                      </Link>
                     </center>
                   </div>
                 </div>
@@ -105,4 +106,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default StationMasterLogin;
