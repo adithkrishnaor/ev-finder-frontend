@@ -2,56 +2,49 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const SignUp = () => {
+const StationMasterSignUp = () => {
   const [data, setData] = new useState({
-    name: "",
+    fullName: "",
     email: "",
-    phone: "",
-    dob: "",
-    gender: "",
     password: "",
-    cpass: "",
+    phoneNumber: "",
+    address: "",
+    companyName: "",
   });
 
   const inputHandler = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
   };
 
+  const validatePhoneNumber = (phone) => {
+    const re = /^\d{10}$/; // Example: Validates a 10-digit phone number
+    return re.test(phone);
+  };
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
 
-  const validatePhoneNumber = (phone) => {
-    const re = /^\d{10}$/; // Example: Validates a 10-digit phone number
-    return re.test(phone);
-  };
-
-  const validateDOB = (dob) => {
-    const today = new Date();
-    const birthDate = new Date(dob);
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    if (
-      monthDifference < 0 ||
-      (monthDifference === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
-    }
-    return age >= 18; // Example: User must be at least 18 years old
+  const validatePassword = (password) => {
+    const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$/;
+    return re.test(password);
   };
 
   const readValue = () => {
     if (
-      !data.name ||
+      !data.fullName ||
       !data.email ||
-      !data.phone ||
-      !data.dob ||
-      !data.gender ||
       !data.password ||
-      !data.cpass
+      !data.phoneNumber ||
+      !data.address ||
+      !data.companyName
     ) {
       alert("Please fill in all fields.");
+      return;
+    }
+
+    if (!validatePhoneNumber(data.phoneNumber)) {
+      alert("Please enter a valid phone number.");
       return;
     }
 
@@ -60,62 +53,57 @@ const SignUp = () => {
       return;
     }
 
-    if (!validatePhoneNumber(data.phone)) {
-      alert("Please enter a valid 10-digit phone number.");
+    if (!validatePassword(data.password)) {
+      alert(
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long."
+      );
       return;
     }
 
-    if (!validateDOB(data.dob)) {
-      alert("You must be at least 18 years old.");
-      return;
-    }
+    console.log(data);
 
-    if (data.password == data.cpass) {
-      let newdata = {
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        dob: data.dob,
-        gender: data.gender,
-        password: data.password,
-      };
+    let newdata = {
+      fullName: data.fullName,
+      email: data.email,
+      password: data.password,
+      phoneNumber: data.phoneNumber,
+      address: data.address,
+      companyName: data.companyName,
+    };
 
-      axios
-        .post("http://localhost:8080/signup", newdata)
-        .then((response) => {
-          console.log(response.data);
-
-          if (response.data.status == "success") {
-            alert("Registration Success");
-            setData({
-              name: "",
-              email: "",
-              phone: "",
-              dob: "",
-              gender: "",
-              password: "",
-              cpass: "",
-            });
-          } else {
-            alert("User already exist");
-            setData({
-              name: "",
-              email: "",
-              phone: "",
-              dob: "",
-              gender: "",
-              password: "",
-              cpass: "",
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      alert("Password and Confirm Password should be same");
-    }
+    axios
+      .post("http://localhost:8080/stationSignUp", newdata)
+      .then((response) => {
+        if (response.data && response.data.status === "success") {
+          alert("Successfully Signed Up");
+          setData({
+            fullName: "",
+            email: "",
+            password: "",
+            phoneNumber: "",
+            address: "",
+            companyName: "",
+          });
+        } else if (response.data.status === "email already exist") {
+          alert("Email Already Exists");
+          setData({
+            fullName: "",
+            email: "",
+            password: "",
+            phoneNumber: "",
+            address: "",
+            companyName: "",
+          });
+        } else {
+          alert("An unexpected error occurred. Please try again.");
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error signing up!", error);
+        alert("An error occurred. Please try again later.");
+      });
   };
+
   return (
     <div>
       <div className="container-fluid bg-light min-vh-100 d-flex align-items-center">
@@ -123,7 +111,9 @@ const SignUp = () => {
           <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 d-flex justify-content-center">
             <div className="card w-50 border-rounded border-secondary shadow-sm">
               <div className="card-body p-4">
-                <h2 className="card-title text-center mb-4">User Sign Up</h2>
+                <h2 className="card-title text-center mb-4">
+                  Station Master Sign Up
+                </h2>
                 <div className="row g-3">
                   <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                     <label htmlFor="" className="form-label">
@@ -132,10 +122,52 @@ const SignUp = () => {
                     <input
                       type="text"
                       className="form-control"
-                      name="name"
-                      value={data.name}
+                      name="fullName"
+                      value={data.fullName}
                       onChange={inputHandler}
                       maxLength={25}
+                      required
+                    />
+                  </div>
+                  <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                    <label htmlFor="" className="form-label">
+                      Address
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="address"
+                      value={data.address}
+                      onChange={inputHandler}
+                      maxLength={30}
+                      required
+                    />
+                  </div>
+                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+                    <label htmlFor="" className="form-label">
+                      Company Name
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="companyName"
+                      value={data.companyName}
+                      onChange={inputHandler}
+                      maxLength={30}
+                      required
+                    />
+                  </div>
+                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+                    <label htmlFor="" className="form-label">
+                      Phone Number
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="phoneNumber"
+                      value={data.phoneNumber}
+                      onChange={inputHandler}
+                      required
                     />
                   </div>
                   <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
@@ -149,48 +181,8 @@ const SignUp = () => {
                       value={data.email}
                       onChange={inputHandler}
                       maxLength={30}
+                      required
                     />
-                  </div>
-                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                    <label htmlFor="" className="form-label">
-                      Phone Number
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      name="phone"
-                      value={data.phone}
-                      onChange={inputHandler}
-                    />
-                  </div>
-                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                    <label htmlFor="" className="form-label">
-                      Date of Birth
-                    </label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      name="dob"
-                      value={data.dob}
-                      onChange={inputHandler}
-                      max={new Date().toISOString().split("T")[0]}
-                    />
-                  </div>
-                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                    <label htmlFor="" className="form-label">
-                      Gender
-                    </label>
-                    <select
-                      className="form-control"
-                      name="gender"
-                      value={data.gender}
-                      onChange={inputHandler}
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
                   </div>
                   <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                     <label htmlFor="" className="form-label">
@@ -203,21 +195,10 @@ const SignUp = () => {
                       value={data.password}
                       onChange={inputHandler}
                       maxLength={25}
+                      required
                     />
                   </div>
-                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                    <label htmlFor="" className="form-label">
-                      Confirm Password
-                    </label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      name="cpass"
-                      value={data.cpass}
-                      onChange={inputHandler}
-                      maxLength={25}
-                    />
-                  </div>
+
                   <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                     <center>
                       <button className="btn btn-primary" onClick={readValue}>
@@ -240,4 +221,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default StationMasterSignUp;
