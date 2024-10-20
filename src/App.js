@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage";
 import MapScreen from "./components/MapScreen";
 import StationMasterSignUp from "./components/StationMasterSignUp";
 import StationMasterLogin from "./components/StationMasterLogin";
+import AddStation from "./components/AddStation";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/map" element={<MapScreen />} />
         <Route path="/stationSignUp" element={<StationMasterSignUp />} />
         <Route path="/stationLogin" element={<StationMasterLogin />} />
+        <Route path="/addStation" element={<AddStation />} />
       </Routes>
     </BrowserRouter>
   );
