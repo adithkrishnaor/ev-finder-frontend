@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapContainer,
   Marker,
@@ -9,7 +9,7 @@ import {
 } from "react-leaflet";
 
 const AddStation = () => {
-  const [data, setData] = new useState({
+  const [data, setData] = useState({
     stationName: "",
     stationAddress: "",
     stationType: "",
@@ -17,14 +17,39 @@ const AddStation = () => {
     location: null,
   });
 
+  const [stations, setStations] = useState([]);
+
   const inputHandler = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
   };
 
-  const stationSubmit = async (e) => {
-    e.preventDefault();
+  const validateForm = () => {
+    if (!data.stationName) {
+      alert("Station Name is required.");
+      return false;
+    }
+    if (!data.stationAddress) {
+      alert("Station Address is required.");
+      return false;
+    }
+    if (!data.stationType) {
+      alert("Station Type is required.");
+      return false;
+    }
+    if (!data.chargingPoints) {
+      alert("Charging Points are required.");
+      return false;
+    }
     if (!data.location) {
       alert("Please select a location on the map.");
+      return false;
+    }
+    return true;
+  };
+
+  const stationSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
       return;
     }
     try {
@@ -35,8 +60,9 @@ const AddStation = () => {
           coordinates: [data.location.lng, data.location.lat],
         },
       });
-      if (response.data.status == "success") {
+      if (response.data.status === "success") {
         alert("Station added successfully.");
+        fetchStations(); // Refresh the stations list
       } else if (response.data.status === "Station already exists") {
         alert("A station already exists at this location.");
       } else {
@@ -57,16 +83,30 @@ const AddStation = () => {
     return null;
   };
 
+  const fetchStations = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/getAllStations");
+      const stationsData = await response.json();
+      setStations(stationsData);
+    } catch (error) {
+      console.error("Error fetching stations:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStations();
+  }, []);
+
   return (
     <div className="container-fluid bg-light min-vh-100 d-flex align-items-center">
       <div className="container">
         <div className="row justify-content-center">
-          <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12  d-flex justify-content-center">
-            <div className="card w-50 border-rounded border-secondary shadow-sm">
+          <div className="col-12 col-md-8 col-lg-6">
+            <div className="card border-rounded border-secondary shadow-sm">
               <div className="card-body p-4">
                 <h2 className="card-title text-center mb-4">Add Station</h2>
-                <div className="row g-3">
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                <form onSubmit={stationSubmit}>
+                  <div className="mb-3">
                     <label htmlFor="stationName" className="form-label">
                       Station Name
                     </label>
@@ -81,7 +121,7 @@ const AddStation = () => {
                       maxLength={25}
                     />
                   </div>
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                  <div className="mb-3">
                     <label htmlFor="stationAddress" className="form-label">
                       Station Address
                     </label>
@@ -95,7 +135,7 @@ const AddStation = () => {
                       required
                     />
                   </div>
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                  <div className="mb-3">
                     <label htmlFor="stationType" className="form-label">
                       Station Type
                     </label>
@@ -112,7 +152,7 @@ const AddStation = () => {
                       <option value="Slow Charging">Slow Charging</option>
                     </select>
                   </div>
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                  <div className="mb-3">
                     <label htmlFor="chargingPoints" className="form-label">
                       Charging Points
                     </label>
@@ -124,40 +164,55 @@ const AddStation = () => {
                       value={data.chargingPoints}
                       onChange={inputHandler}
                       required
+                      min={1}
                     />
                   </div>
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                  <div className="mb-3">
                     <label htmlFor="location" className="form-label">
                       Location
                     </label>
                     <div style={{ height: "400px" }}>
                       <MapContainer
-                        center={[51.505, -0.09]}
-                        zoom={13}
+                        center={[9.931, 76.256]}
+                        zoom={7}
                         scrollWheelZoom={true}
                         style={{ height: "100%", width: "100%" }}
                       >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                         <MapEvents />
-                        {data.location === null ? null : (
+                        {data.location && (
                           <Marker position={data.location}>
-                            <Popup>Station Location</Popup>
+                            <Popup>Selected Location</Popup>
                           </Marker>
                         )}
+                        {stations.map((station) => (
+                          <Marker
+                            key={station._id}
+                            position={[
+                              station.location.coordinates[1],
+                              station.location.coordinates[0],
+                            ]}
+                          >
+                            <Popup>
+                              {station.stationName}
+                              <br />
+                              {station.stationAddress}
+                              <br />
+                              {station.stationType}
+                              <br />
+                              Charging Points: {station.chargingPoints}
+                            </Popup>
+                          </Marker>
+                        ))}
                       </MapContainer>
                     </div>
                   </div>
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <center>
-                      <button
-                        className="btn btn-success w-50"
-                        onClick={stationSubmit}
-                      >
-                        Add Station
-                      </button>
-                    </center>
+                  <div className="d-grid">
+                    <button type="submit" className="btn btn-success">
+                      Add Station
+                    </button>
                   </div>
-                </div>
+                </form>
               </div>
             </div>
           </div>
