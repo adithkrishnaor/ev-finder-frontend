@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
@@ -8,6 +7,7 @@ import MapScreen from "./components/MapScreen";
 import StationMasterSignUp from "./components/StationMasterSignUp";
 import StationMasterLogin from "./components/StationMasterLogin";
 import AddStation from "./components/AddStation";
+import BookingForm from "./components/Booking";
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
         <Route path="/stationSignUp" element={<StationMasterSignUp />} />
         <Route path="/stationLogin" element={<StationMasterLogin />} />
         <Route path="/addStation" element={<AddStation />} />
+        <Route path="/booking" element={<BookingForm />} />
       </Routes>
     </BrowserRouter>
   );

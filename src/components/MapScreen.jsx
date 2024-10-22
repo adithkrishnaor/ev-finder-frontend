@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Navbar from "./Navbar";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Updated import
 
 // Default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -112,13 +113,8 @@ const MapScreen = () => {
   const [stations, setStations] = useState([]);
   const [nearestStation, setNearestStation] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
-  const [showBookingForm, setShowBookingForm] = useState(false);
-  const [bookingDetails, setBookingDetails] = useState({
-    date: "",
-    time: "",
-    vehicleNumber: "",
-  });
   const mapRef = useRef(null);
+  const navigate = useNavigate(); // Updated hook
 
   useEffect(() => {
     const fetchStations = async () => {
@@ -162,18 +158,7 @@ const MapScreen = () => {
   };
 
   const handleBookNow = (station) => {
-    alert(`Booking station: ${station.stationName}`);
-    // Add your booking logic here
-  };
-
-  const handleBookingChange = (e) => {
-    setBookingDetails({ ...bookingDetails, [e.target.name]: e.target.value });
-  };
-
-  const handleBookingSubmit = (e) => {
-    e.preventDefault();
-    alert("Booking Successful");
-    setShowBookingForm(false);
+    navigate("/booking", { state: { station } }); // Updated navigation
   };
 
   return (
@@ -201,49 +186,43 @@ const MapScreen = () => {
         >
           Find Nearest Station
         </button>
-        {stations.map((station) => (
-          <Marker
-            key={station.id}
-            position={[
-              station.location.coordinates[1],
-              station.location.coordinates[0],
-            ]}
-            icon={stationIcon}
-          >
-            <Popup>
-              <center>
-                <strong>{station.stationName}</strong>
-              </center>
-              <br />
-              Type: {station.stationType}
-              <br />
-              Address: {station.stationAddress}
-              <br />
-              Charging Points: {station.chargingPoints}
-              <br /> <br />
-              <center>
+        {stations &&
+          stations.map((station) => (
+            <Marker
+              key={station.id}
+              position={[
+                station.location.coordinates[1],
+                station.location.coordinates[0],
+              ]}
+              icon={stationIcon}
+            >
+              <Popup>
+                <strong>Station: {station.stationName}</strong>
+                <br />
+                Type: {station.stationType}
+                <br />
+                Address: {station.stationAddress}
+                <br />
+                Charging Points: {station.chargingPoints}
+                <br />
                 <button
-                  onClick={() => handleBookNow(station)}
                   style={{
-                    backgroundColor: "#4CAF50", // Green background
-                    border: "none", // Remove border
-                    color: "white", // White text
-                    padding: "5px 10px", // Some padding
-                    textAlign: "center", // Centered text
-                    textDecoration: "none", // Remove underline
-                    display: "inline-block", // Make the button inline-block
-                    fontSize: "14px", // Increase font size
-                    margin: "4px 2px", // Some margin
-                    cursor: "pointer", // Pointer cursor on hover
-                    borderRadius: "12px", // Rounded corners
+                    cursor: "pointer",
+                    borderRadius: "12px",
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    border: "none",
+                    padding: "10px 20px",
+                    marginTop: "10px",
                   }}
+                  onClick={() => handleBookNow(station)}
                 >
                   Book Now
                 </button>
-              </center>
-            </Popup>
-          </Marker>
-        ))}
+              </Popup>
+            </Marker>
+          ))}
+
         {nearestStation && (
           <Marker
             position={[
@@ -257,6 +236,10 @@ const MapScreen = () => {
               <br />
               Type: {nearestStation.stationType}
               <br />
+              Address: {nearestStation.stationAddress}
+              <br />
+              Charging Points: {nearestStation.chargingPoints}
+              <br />
               <button
                 style={{
                   cursor: "pointer",
@@ -267,7 +250,7 @@ const MapScreen = () => {
                   padding: "10px 20px",
                   marginTop: "10px",
                 }}
-                onClick={() => setShowBookingForm(true)}
+                onClick={() => handleBookNow(nearestStation)}
               >
                 Book Now
               </button>
@@ -275,101 +258,6 @@ const MapScreen = () => {
           </Marker>
         )}
       </MapContainer>
-
-      {/* Booking Form */}
-      {showBookingForm && (
-        <div
-          style={{
-            position: "fixed",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              padding: "20px",
-              borderRadius: "8px",
-              width: "300px",
-            }}
-          >
-            <h5>Book Slot</h5>
-            <form onSubmit={handleBookingSubmit}>
-              <div style={{ marginBottom: "10px" }}>
-                <label>Date</label>
-                <input
-                  type="date"
-                  name="date"
-                  value={bookingDetails.date}
-                  onChange={handleBookingChange}
-                  required
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    marginTop: "5px",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                  }}
-                />
-              </div>
-              <div style={{ marginBottom: "10px" }}>
-                <label>Time Slot</label>
-                <input
-                  type="time"
-                  name="time"
-                  value={bookingDetails.time}
-                  onChange={handleBookingChange}
-                  required
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    marginTop: "5px",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                  }}
-                />
-              </div>
-              <div style={{ marginBottom: "10px" }}>
-                <label>Vehicle Number</label>
-                <input
-                  type="text"
-                  name="vehicleNumber"
-                  value={bookingDetails.vehicleNumber}
-                  onChange={handleBookingChange}
-                  required
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    marginTop: "5px",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                  }}
-                />
-              </div>
-              <button
-                type="submit"
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                Submit
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
