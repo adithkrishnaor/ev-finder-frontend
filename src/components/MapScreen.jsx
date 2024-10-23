@@ -197,28 +197,36 @@ const MapScreen = () => {
               icon={stationIcon}
             >
               <Popup>
-                <strong>Station: {station.stationName}</strong>
-                <br />
+                <h6>Station: {station.stationName}</h6>
+                <hr />
                 Type: {station.stationType}
                 <br />
                 Address: {station.stationAddress}
                 <br />
                 Charging Points: {station.chargingPoints}
                 <br />
-                <button
+                <div
                   style={{
-                    cursor: "pointer",
-                    borderRadius: "12px",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    border: "none",
-                    padding: "10px 20px",
-                    marginTop: "10px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
-                  onClick={() => handleBookNow(station)}
                 >
-                  Book Now
-                </button>
+                  <button
+                    style={{
+                      cursor: "pointer",
+                      borderRadius: "12px",
+                      backgroundColor: "#007bff",
+                      color: "white",
+                      border: "none",
+                      padding: "10px 20px",
+                      marginTop: "10px",
+                    }}
+                    onClick={() => handleBookNow(station)}
+                  >
+                    Book Now
+                  </button>
+                </div>
               </Popup>
             </Marker>
           ))}
