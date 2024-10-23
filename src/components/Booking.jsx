@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -50,10 +51,43 @@ const BookingForm = () => {
     }
   };
 
-  const handlePaymentSubmit = (e) => {
+  // Update the handlePaymentSubmit function in your BookingForm component
+
+  const handlePaymentSubmit = async (e) => {
     e.preventDefault();
-    setBookingConfirmed(true);
-    setShowPaymentForm(false);
+
+    try {
+      //const formattedDate = bookingDetails.date;
+
+      const response = await axios.post("http://localhost:8080/createBooking", {
+        userId: localStorage.getItem("userId"), // Assuming you store userId in localStorage
+        stationId: station._id,
+        bookingDate: bookingDetails.date,
+        timeSlot: bookingDetails.time,
+        vehicleNumber: bookingDetails.vehicleNumber,
+      });
+
+      console.log(response.data.date);
+
+      if (response.data.status === "success") {
+        setBookingConfirmed(true);
+        setShowPaymentForm(false);
+      } else if (response.data.status === "slot_unavailable") {
+        setError(
+          "Selected time slot is no longer available. Please choose another slot."
+        );
+        setShowPaymentForm(false);
+      } else {
+        setError("Something went wrong. Please try again.");
+        console.log(response.data);
+        console.log(response.data.date);
+        setShowPaymentForm(false);
+      }
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      setError("Failed to create booking. Please try again.");
+      setShowPaymentForm(false);
+    }
   };
 
   const timeOptions = [
