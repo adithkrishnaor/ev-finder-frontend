@@ -110,6 +110,7 @@ const BookingForm = () => {
         {!bookingConfirmed ? (
           <>
             <h5>Book Slot at {station.stationName}</h5>
+            <hr />
             <form onSubmit={handleBookingSubmit}>
               <div style={{ marginBottom: "10px" }}>
                 <label htmlFor="bookingDate">Booking Date:</label>
@@ -174,6 +175,7 @@ const BookingForm = () => {
                 />
               </div>
               {error && <p style={{ color: "red" }}>{error}</p>}
+              <br />
               <button
                 type="submit"
                 style={{
@@ -201,6 +203,7 @@ const BookingForm = () => {
             <p>Time: {bookingDetails.time}</p>
             <p>Vehicle Number: {bookingDetails.vehicleNumber}</p>
             <center>
+              <hr />
               <button
                 style={{
                   width: "80%",
@@ -247,6 +250,7 @@ const BookingForm = () => {
             }}
           >
             <h5>Payment Details</h5>
+            <hr />
             <form onSubmit={handlePaymentSubmit}>
               <div style={{ marginBottom: "10px" }}>
                 <label htmlFor="cardUserName">Full Name:</label>
@@ -320,6 +324,7 @@ const BookingForm = () => {
                   }}
                 />
               </div>
+              <br />
               <button
                 type="submit"
                 style={{
