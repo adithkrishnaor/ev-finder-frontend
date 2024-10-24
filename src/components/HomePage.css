@@ -1,108 +1,129 @@
 /* Global Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Body Styling */
-body, html {
-    height: 100%;
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f7fc;
+body,
+html {
+  height: 100%;
+  font-family: "Arial", sans-serif;
+  background-color: #f4f7fc;
 }
 
 /* Full-Screen Container */
 .homepage-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100vw;
-    height: 100vh;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 }
 
 /* Left and Right Sides */
-.left-side, .right-side {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-size: cover; /* Ensures background image covers the whole section */
-    background-position: center;
-    position: relative; /* Required for overlay effect */
+.left-side,
+.right-side {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-size: cover; /* Ensures background image covers the whole section */
+  background-position: center;
+  position: relative; /* Required for overlay effect */
 }
 
 /* Dimmed Overlay */
-.left-side::before, .right-side::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8); /* Dimmed overlay */
-    z-index: 1; /* Ensures the overlay appears over the image */
+.left-side::before,
+.right-side::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* Dimmed overlay */
+  z-index: 1; /* Ensures the overlay appears over the image */
 }
 
 /* Left Side with Image */
 .left-side {
-    background-image: url('/public/bgimg2.jpg'); /* Left side image */
-    color: #fff;
+  background-image: url("/public/bgimg2.jpg"); /* Left side image */
+  color: #fff;
 }
 
 /* Right Side with Image */
 .right-side {
-    background-image: url('/public/bgimg1.jpg'); /* Right side image */
-    color: #fff;
+  background-image: url("/public/bgimg1.jpg"); /* Right side image */
+  color: #fff;
 }
 
-.left-side h2, .right-side h2 {
-    margin-bottom: 20px;
-    font-size: 3rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 2; /* Ensure text is above the background and overlay */
+.left-side h2,
+.right-side h2 {
+  margin-bottom: 20px;
+  font-size: 3rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2; /* Ensure text is above the background and overlay */
 }
 
 /* Links / Buttons */
-.left-side a, .right-side a {
-    display: inline-block;
-    margin: 10px 0;
-    padding: 15px 40px;
-    text-align: center;
-    text-decoration: none;
-    background-color: rgba(255, 255, 255, 0.8);
-    color: #333;
-    border-radius: 30px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    z-index: 2; /* Ensure buttons are above the background and overlay */
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+.left-side a,
+.right-side a {
+  display: inline-block;
+  margin: 10px 0;
+  padding: 15px 40px;
+  text-align: center;
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #333;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  z-index: 2; /* Ensure buttons are above the background and overlay */
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 
-.left-side a:hover, .right-side a:hover {
-    background-color: #fff;
-    color: #007bff;
-    text-decoration: none;
-    transform: scale(1.05);
+.left-side a:hover,
+.right-side a:hover {
+  background-color: #fff;
+  color: #007bff;
+  text-decoration: none;
+  transform: scale(1.05);
+}
+
+/* Overlapping Heading */
+.overlapping-heading {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 3em;
+  color: #f0f0f0; /* Light color for the text */
+  padding: 10px 0;
+  z-index: 1000;
 }
 
 /* Responsiveness for smaller screens */
 @media (max-width: 768px) {
-    .homepage-container {
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-    }
+  .homepage-container {
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
 
-    .left-side, .right-side {
-        width: 100%;
-        height: 50%;
-    }
+  .left-side,
+  .right-side {
+    width: 100%;
+    height: 50%;
+  }
 
-    .left-side h2, .right-side h2 {
-        font-size: 2rem;
-    }
+  .left-side h2,
+  .right-side h2 {
+    font-size: 2rem;
+  }
 }

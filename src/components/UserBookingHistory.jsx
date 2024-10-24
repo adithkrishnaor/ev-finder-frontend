@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect, useCallback } from "react";
+import Navbar from "./Navbar";
 
 const UserBookingHistory = () => {
   const [bookings, setBookings] = useState([]);
