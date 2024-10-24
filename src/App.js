@@ -8,6 +8,7 @@ import StationMasterSignUp from "./components/StationMasterSignUp";
 import StationMasterLogin from "./components/StationMasterLogin";
 import AddStation from "./components/AddStation";
 import BookingForm from "./components/Booking";
+import UserBookingHistory from "./components/UserBookingHistory";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/stationLogin" element={<StationMasterLogin />} />
         <Route path="/addStation" element={<AddStation />} />
         <Route path="/booking" element={<BookingForm />} />
+        <Route path="/userBookingHistory" element={<UserBookingHistory />} />
       </Routes>
     </BrowserRouter>
   );

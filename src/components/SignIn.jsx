@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import UserBookingHistory from "./UserBookingHistory";
 
 const SignIn = () => {
   const [data, setData] = new useState({
@@ -14,18 +15,21 @@ const SignIn = () => {
 
   const navigate = useNavigate();
 
+  let userId;
+  let token;
+
   const readValue = () => {
     axios
       .post("http://localhost:8080/signin", data)
       .then((response) => {
         console.log(response.data);
-        if (response.data.status == "Invalid Email") {
+        if (response.data.status === "Invalid Email") {
           alert("Invalid Email");
-        } else if (response.data.status == "Invalid Password") {
+        } else if (response.data.status === "Invalid Password") {
           alert("Invalid Password");
         } else {
-          let token = response.data.token;
-          let userId = response.data.userId;
+          token = response.data.token;
+          userId = response.data.userId;
 
           console.log(token);
           console.log(userId);
@@ -42,6 +46,10 @@ const SignIn = () => {
 
     console.log(data);
   };
+
+  if (userId) {
+    return <UserBookingHistory userId={userId} />;
+  }
 
   return (
     <div className="container-fluid bg-light min-vh-100 d-flex align-items-center">
