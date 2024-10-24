@@ -9,14 +9,11 @@ const SignIn = () => {
     password: "",
   });
 
+  const navigate = useNavigate();
+
   const inputHandler = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
   };
-
-  const navigate = useNavigate();
-
-  let userId;
-  let token;
 
   const readValue = () => {
     axios
@@ -28,8 +25,7 @@ const SignIn = () => {
         } else if (response.data.status === "Invalid Password") {
           alert("Invalid Password");
         } else {
-          token = response.data.token;
-          userId = response.data.userId;
+          const { token, userId } = response.data;
 
           console.log(token);
           console.log(userId);
@@ -43,13 +39,7 @@ const SignIn = () => {
       .catch((error) => {
         console.log(error);
       });
-
-    console.log(data);
   };
-
-  if (userId) {
-    return <UserBookingHistory userId={userId} />;
-  }
 
   return (
     <div className="container-fluid bg-light min-vh-100 d-flex align-items-center">
