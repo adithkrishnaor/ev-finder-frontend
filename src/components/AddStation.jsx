@@ -7,6 +7,7 @@ import {
   TileLayer,
   useMapEvents,
 } from "react-leaflet";
+import Navbar from "./StationNavbar";
 
 const AddStation = () => {
   const [data, setData] = useState({
@@ -100,6 +101,7 @@ const AddStation = () => {
   return (
     <div className="container-fluid bg-light min-vh-100 d-flex align-items-center">
       <div className="container">
+        <Navbar />
         <div className="row justify-content-center">
           <div className="col-12 col-md-8 col-lg-6">
             <div className="card border-rounded border-secondary shadow-sm">

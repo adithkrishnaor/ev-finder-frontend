@@ -4,6 +4,7 @@ import "./HomePage.css"; // Import the CSS file for styling
 const HomePage = () => {
   return (
     <div>
+      <h1 className="overlapping-heading">EV STATION FINDER & MANAGEMENT</h1>
       <div className="homepage-container">
         {/* Left Side for Users */}
         <div className="left-side">
