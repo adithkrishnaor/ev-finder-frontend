@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect, useCallback } from "react";
-import Navbar from "./Navbar";
+import Navbar from "./StationNavbar";
 
 const StationBookingHistory = () => {
   const [bookings, setBookings] = useState([]);
@@ -235,50 +235,59 @@ const StationBookingHistory = () => {
   };
 
   return (
-    <div className="container py-4">
-      <h2 className="mb-4">Station Booking History</h2>
+    <div className="container">
+      <Navbar />
+      <div className="container py-4">
+        <h2 className="mb-4">Station Booking History</h2>
 
-      <ul className="nav nav-tabs mb-4">
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "all" ? "active" : ""}`}
-            onClick={() => setActiveTab("all")}
-          >
-            All Bookings
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "confirmed" ? "active" : ""}`}
-            onClick={() => setActiveTab("confirmed")}
-          >
-            Confirmed
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "completed" ? "active" : ""}`}
-            onClick={() => setActiveTab("completed")}
-          >
-            Completed
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "cancelled" ? "active" : ""}`}
-            onClick={() => setActiveTab("cancelled")}
-          >
-            Cancelled
-          </button>
-        </li>
-      </ul>
+        <ul className="nav nav-tabs mb-4">
+          <li className="nav-item">
+            <button
+              className={`nav-link ${activeTab === "all" ? "active" : ""}`}
+              onClick={() => setActiveTab("all")}
+            >
+              All Bookings
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${
+                activeTab === "confirmed" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("confirmed")}
+            >
+              Confirmed
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${
+                activeTab === "completed" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("completed")}
+            >
+              Completed
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${
+                activeTab === "cancelled" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("cancelled")}
+            >
+              Cancelled
+            </button>
+          </li>
+        </ul>
 
-      <div className="tab-content">
-        {filteredBookings().length === 0 ? (
-          <p className="text-center text-secondary py-5">No bookings found</p>
-        ) : (
-          filteredBookings().map(renderBookingCard)
-        )}
+        <div className="tab-content">
+          {filteredBookings().length === 0 ? (
+            <p className="text-center text-secondary py-5">No bookings found</p>
+          ) : (
+            filteredBookings().map(renderBookingCard)
+          )}
+        </div>
       </div>
     </div>
   );
