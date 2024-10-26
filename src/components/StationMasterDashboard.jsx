@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 import Navbar from "./StationNavbar";
+import { useNavigate } from "react-router-dom";
 
 const StationMasterDashboard = () => {
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStations();
@@ -69,7 +73,12 @@ const StationMasterDashboard = () => {
         <div className="row mb-4">
           <div className="col">
             <h2 className="mb-4">My Charging Stations</h2>
-            <button className="btn btn-success mb-4">Add New Station</button>
+            <button
+              className="btn btn-success mb-4"
+              onClick={() => navigate("/addStation")}
+            >
+              Add New Station
+            </button>
           </div>
         </div>
 
@@ -124,7 +133,23 @@ const StationMasterDashboard = () => {
                   <h5 className="mb-0">Stations Map View</h5>
                 </div>
                 <div className="card-body">
-                  {/* Map component would go here */}
+                  {stations.map((station) => (
+                    <MapContainer
+                      center={[9.931, 76.256]}
+                      zoom={6}
+                      style={{ height: "200px", width: "100%" }}
+                    >
+                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                      <Marker
+                        position={[
+                          station.location.coordinates[1],
+                          station.location.coordinates[0],
+                        ]}
+                      >
+                        <Popup>{station.stationName}</Popup>
+                      </Marker>
+                    </MapContainer>
+                  ))}
                 </div>
               </div>
             </div>
