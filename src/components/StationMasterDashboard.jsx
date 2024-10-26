@@ -108,9 +108,6 @@ const StationMasterDashboard = () => {
                   </div>
                   <div className="card-footer bg-transparent border-top-0">
                     <div className="d-flex justify-content-between">
-                      <button className="btn btn-outline-primary btn-sm">
-                        Edit
-                      </button>
                       <button
                         className="btn btn-outline-danger btn-sm"
                         onClick={() => handleDelete(station._id)}
@@ -133,14 +130,15 @@ const StationMasterDashboard = () => {
                   <h5 className="mb-0">Stations Map View</h5>
                 </div>
                 <div className="card-body">
-                  {stations.map((station) => (
-                    <MapContainer
-                      center={[9.931, 76.256]}
-                      zoom={6}
-                      style={{ height: "200px", width: "100%" }}
-                    >
-                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  <MapContainer
+                    center={[9.931, 76.256]}
+                    zoom={6}
+                    style={{ height: "200px", width: "100%" }}
+                  >
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    {stations.map((station) => (
                       <Marker
+                        key={station.id} // Ensure each marker has a unique key
                         position={[
                           station.location.coordinates[1],
                           station.location.coordinates[0],
@@ -148,8 +146,8 @@ const StationMasterDashboard = () => {
                       >
                         <Popup>{station.stationName}</Popup>
                       </Marker>
-                    </MapContainer>
-                  ))}
+                    ))}
+                  </MapContainer>
                 </div>
               </div>
             </div>
