@@ -10,6 +10,7 @@ import AddStation from "./components/AddStation";
 import BookingForm from "./components/Booking";
 import UserBookingHistory from "./components/UserBookingHistory";
 import StationBookingHistory from "./components/StationBookingHistory";
+import StationMasterDashboard from "./components/StationMasterDashboard";
 
 function App() {
   return (
@@ -27,6 +28,10 @@ function App() {
         <Route
           path="/stationBookingHistory"
           element={<StationBookingHistory />}
+        />
+        <Route
+          path="/stationMasterDashboard"
+          element={<StationMasterDashboard />}
         />
       </Routes>
     </BrowserRouter>

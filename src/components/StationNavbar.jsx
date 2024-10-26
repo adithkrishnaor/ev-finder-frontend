@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/map">
+        <Link className="navbar-brand" to="/stationMasterDashboard">
           EV App
         </Link>
         <button
@@ -36,15 +36,15 @@ const Navbar = () => {
             <Link
               className="nav-link active"
               aria-current="page"
-              to="/addStation"
+              to="/stationMasterDashboard"
             >
+              Dashboard
+            </Link>
+            <Link className="nav-link" to="/addStation">
               Add Station
             </Link>
             <Link className="nav-link" to="/stationBookingHistory">
-              Staion Bookings
-            </Link>
-            <Link className="nav-link" to="#">
-              Profile
+              Station Bookings
             </Link>
             <button className="nav-link btn" onClick={handleLogout}>
               Logout
