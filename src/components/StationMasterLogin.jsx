@@ -24,13 +24,13 @@ const StationMasterLogin = () => {
         } else if (response.data.status == "Invalid Password") {
           alert("Invalid Password");
         } else {
-          const { token, stationId } = response.data;
+          const { token, stationMasterId } = response.data;
 
           console.log(token);
-          console.log(stationId);
+          console.log(stationMasterId);
 
           localStorage.setItem("token", token);
-          localStorage.setItem("stationId", stationId);
+          localStorage.setItem("stationMasterId", stationMasterId);
 
           navigate("/addStation");
         }
