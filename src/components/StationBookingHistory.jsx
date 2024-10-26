@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect, useCallback } from "react";
-import Navbar from "./StationNavbar";
+import Navbar from "./Navbar";
 
 const StationBookingHistory = () => {
   const [bookings, setBookings] = useState([]);
@@ -8,11 +8,13 @@ const StationBookingHistory = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
 
-  const stationId = localStorage.getItem("stationId");
+  // Get stationMasterId from localStorage
+  const stationMasterId = localStorage.getItem("stationMasterId");
 
   const fetchStationBookings = useCallback(async () => {
-    if (!stationId) {
-      setError("Station ID is required");
+    if (!stationMasterId) {
+      setError("stationMasterId is required");
+      console.log("stationMasterId is required");
       return;
     }
 
@@ -20,33 +22,32 @@ const StationBookingHistory = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(
-        `http://localhost:8080/stationBookings/${stationId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
+      // Fetch the list of stations managed by the station master
+      const stationsResponse = await axios.get(
+        `http://localhost:8080/stationMasterStations/${stationMasterId}`
+      );
+      const stationIds = stationsResponse.data.map((station) => station._id);
+
+      // Fetch the booking details for each station
+      const bookingPromises = stationIds.map((stationId) =>
+        axios.get(`http://localhost:8080/stationBookings/${stationId}`)
       );
 
-      const data = response.data;
+      const bookingResponses = await Promise.all(bookingPromises);
 
-      if (!Array.isArray(data)) {
-        throw new Error("Invalid data format received from server");
-      }
+      const allBookings = bookingResponses.flatMap((response) => response.data);
 
-      const sanitizedBookings = data.map((booking) => ({
-        _id: booking._id || "unknown",
+      // Validate and sanitize booking data
+      const sanitizedBookings = allBookings.map((booking) => ({
+        ...booking,
         bookingStatus: booking.bookingStatus || "unknown",
-        bookingDate: booking.bookingDate || new Date().toISOString(),
-        timeSlot: booking.timeSlot || "N/A",
-        vehicleNumber: booking.vehicleNumber || "N/A",
+        _id: booking._id || "unknown",
         user: {
           name: booking.user?.name || "Unknown User",
-          email: booking.user?.email || "N/A",
-          phone: booking.user?.phone || "N/A",
+          email: booking.user?.email || "Email not available",
+          phone: booking.user?.phone || "Phone not available",
         },
+        bookingDate: booking.bookingDate || new Date().toISOString(),
       }));
 
       setBookings(sanitizedBookings);
@@ -58,25 +59,45 @@ const StationBookingHistory = () => {
     } finally {
       setLoading(false);
     }
-  }, [stationId]);
+  }, [stationMasterId]);
 
   useEffect(() => {
-    if (stationId) {
+    if (stationMasterId) {
       fetchStationBookings();
     }
-  }, [fetchStationBookings, stationId]);
+  }, [fetchStationBookings, stationMasterId]);
 
   const getStatusBadgeClass = (status) => {
     const safeStatus = String(status || "").toLowerCase();
 
     const classes = {
-      confirmed: "bg-primary",
+      confirmed: "bg-warning",
       completed: "bg-success",
       cancelled: "bg-danger",
       unknown: "bg-secondary",
     };
 
     return `badge ${classes[safeStatus] || classes.unknown}`;
+  };
+
+  const updateBookingStatus = async (bookingId, newStatus) => {
+    try {
+      await axios.patch(
+        `http://localhost:8080/bookings/${bookingId}/status`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      fetchStationBookings(); // Refresh bookings after update
+      alert(`Booking ${newStatus} successfully!`);
+    } catch (err) {
+      console.error("Error updating booking status:", err);
+      alert("Failed to update booking status");
+    }
   };
 
   const filteredBookings = () => {
@@ -101,16 +122,14 @@ const StationBookingHistory = () => {
     }
   };
 
-  if (!stationId) {
+  if (!stationMasterId) {
     return (
       <div className="alert alert-warning m-3" role="alert">
         <div className="d-flex align-items-center">
           <i className="bi bi-exclamation-circle me-2"></i>
           <div>
-            <h5 className="alert-heading mb-1">Station ID Required</h5>
-            <p className="mb-0">
-              Please provide a station ID to view booking history.
-            </p>
+            <h5 className="alert-heading mb-1">Not Logged In</h5>
+            <p className="mb-0">Please log in to view station bookings.</p>
           </div>
         </div>
       </div>
@@ -134,7 +153,7 @@ const StationBookingHistory = () => {
           <i className="bi bi-exclamation-triangle-fill me-2"></i>
           <div>
             <h5 className="alert-heading mb-1">Error Loading Bookings</h5>
-            <p className="mb-0">{error}</p>
+            <p className="mb-2">{error}</p>
           </div>
         </div>
         <button
@@ -150,6 +169,9 @@ const StationBookingHistory = () => {
 
   const renderBookingCard = (booking) => {
     const bookingId = booking._id?.slice(-6) || "unknown";
+    const userName = booking.user?.name || "Unknown User";
+    const userEmail = booking.user?.email || "Email not available";
+    const userPhone = booking.user?.phone || "Phone not available";
     const bookingDate = booking.bookingDate
       ? new Date(booking.bookingDate)
       : new Date();
@@ -159,45 +181,54 @@ const StationBookingHistory = () => {
         <div className="card-header d-flex justify-content-between align-items-center">
           <h5 className="card-title mb-0">Booking #{bookingId}</h5>
           <span className={getStatusBadgeClass(booking.bookingStatus)}>
-            {booking.bookingStatus}
+            {booking.bookingStatus || "Unknown"}
           </span>
         </div>
         <div className="card-body">
           <div className="mb-3">
-            <h6 className="mb-2">Customer Details</h6>
-            <div className="ms-3">
-              <div className="d-flex align-items-center mb-1">
-                <i className="bi bi-person text-secondary me-2"></i>
-                <span>{booking.user.name}</span>
-              </div>
-              <div className="d-flex align-items-center mb-1">
-                <i className="bi bi-envelope text-secondary me-2"></i>
-                <span>{booking.user.email}</span>
-              </div>
-              <div className="d-flex align-items-center">
-                <i className="bi bi-telephone text-secondary me-2"></i>
-                <span>{booking.user.phone}</span>
-              </div>
+            <div className="d-flex align-items-center mb-2">
+              <i className="bi bi-person text-secondary me-2"></i>
+              <span className="fw-bold">{userName}</span>
+            </div>
+            <div className="ms-4 text-secondary">
+              <div>{userEmail}</div>
+              <div>{userPhone}</div>
             </div>
           </div>
 
-          <div>
-            <h6 className="mb-2">Booking Details</h6>
-            <div className="ms-3">
-              <div className="d-flex align-items-center mb-1">
-                <i className="bi bi-calendar text-secondary me-2"></i>
-                <span>{bookingDate.toLocaleDateString()}</span>
-              </div>
-              <div className="d-flex align-items-center mb-1">
-                <i className="bi bi-clock text-secondary me-2"></i>
-                <span>{booking.timeSlot}</span>
-              </div>
-              <div className="d-flex align-items-center">
-                <i className="bi bi-car-front text-secondary me-2"></i>
-                <span>{booking.vehicleNumber}</span>
-              </div>
+          <div className="d-flex gap-4 mb-3">
+            <div className="d-flex align-items-center">
+              <i className="bi bi-calendar text-secondary me-2"></i>
+              <span>{bookingDate.toLocaleDateString()}</span>
+            </div>
+            <div className="d-flex align-items-center">
+              <i className="bi bi-clock text-secondary me-2"></i>
+              <span>{booking.timeSlot}</span>
+            </div>
+            <div className="d-flex align-items-center">
+              <i className="bi bi-car-front text-secondary me-2"></i>
+              <span>{booking.vehicleNumber}</span>
             </div>
           </div>
+
+          {booking.bookingStatus === "confirmed" && (
+            <div className="d-flex gap-2">
+              <button
+                className="btn btn-success btn-sm"
+                onClick={() => updateBookingStatus(booking._id, "completed")}
+              >
+                <i className="bi bi-check-circle me-2"></i>
+                Complete
+              </button>
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={() => updateBookingStatus(booking._id, "cancelled")}
+              >
+                <i className="bi bi-x-circle me-2"></i>
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -205,28 +236,46 @@ const StationBookingHistory = () => {
 
   return (
     <div className="container py-4">
-      <Navbar />
       <h2 className="mb-4">Station Booking History</h2>
 
       <ul className="nav nav-tabs mb-4">
-        {["all", "confirmed", "completed", "cancelled"].map((tab) => (
-          <li key={tab} className="nav-item">
-            <button
-              className={`nav-link ${activeTab === tab ? "active" : ""}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          </li>
-        ))}
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "all" ? "active" : ""}`}
+            onClick={() => setActiveTab("all")}
+          >
+            All Bookings
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "confirmed" ? "active" : ""}`}
+            onClick={() => setActiveTab("confirmed")}
+          >
+            Confirmed
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "completed" ? "active" : ""}`}
+            onClick={() => setActiveTab("completed")}
+          >
+            Completed
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "cancelled" ? "active" : ""}`}
+            onClick={() => setActiveTab("cancelled")}
+          >
+            Cancelled
+          </button>
+        </li>
       </ul>
 
       <div className="tab-content">
         {filteredBookings().length === 0 ? (
-          <div className="text-center text-secondary py-5">
-            <i className="bi bi-inbox h1 d-block mb-3"></i>
-            <p>No bookings found</p>
-          </div>
+          <p className="text-center text-secondary py-5">No bookings found</p>
         ) : (
           filteredBookings().map(renderBookingCard)
         )}

@@ -56,6 +56,7 @@ const AddStation = () => {
     try {
       const response = await axios.post("http://localhost:8080/addStation", {
         ...data,
+        stationMasterId: localStorage.getItem("stationMasterId"),
         location: {
           type: "Point",
           coordinates: [data.location.lng, data.location.lat],
