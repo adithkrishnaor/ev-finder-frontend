@@ -8,12 +8,13 @@ const StationBookingHistory = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
 
-  // Get stationId from localStorage
-  const stationId = localStorage.getItem("stationId");
+  // Get stationMasterId from localStorage
+  const stationMasterId = localStorage.getItem("stationMasterId");
 
   const fetchStationBookings = useCallback(async () => {
-    if (!stationId) {
-      setError("Station ID is required");
+    if (!stationMasterId) {
+      setError("stationMasterId is required");
+      console.log("stationMasterId is required");
       return;
     }
 
@@ -21,24 +22,23 @@ const StationBookingHistory = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(
-        `http://localhost:8080/stationBookings/${stationId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
+      // Fetch the list of stations managed by the station master
+      const stationsResponse = await axios.get(
+        `http://localhost:8080/stationMasterStations/${stationMasterId}`
+      );
+      const stationIds = stationsResponse.data.map((station) => station._id);
+
+      // Fetch the booking details for each station
+      const bookingPromises = stationIds.map((stationId) =>
+        axios.get(`http://localhost:8080/stationBookings/${stationId}`)
       );
 
-      const data = response.data;
+      const bookingResponses = await Promise.all(bookingPromises);
 
-      if (!Array.isArray(data)) {
-        throw new Error("Invalid data format received from server");
-      }
+      const allBookings = bookingResponses.flatMap((response) => response.data);
 
       // Validate and sanitize booking data
-      const sanitizedBookings = data.map((booking) => ({
+      const sanitizedBookings = allBookings.map((booking) => ({
         ...booking,
         bookingStatus: booking.bookingStatus || "unknown",
         _id: booking._id || "unknown",
@@ -59,13 +59,13 @@ const StationBookingHistory = () => {
     } finally {
       setLoading(false);
     }
-  }, [stationId]);
+  }, [stationMasterId]);
 
   useEffect(() => {
-    if (stationId) {
+    if (stationMasterId) {
       fetchStationBookings();
     }
-  }, [fetchStationBookings, stationId]);
+  }, [fetchStationBookings, stationMasterId]);
 
   const getStatusBadgeClass = (status) => {
     const safeStatus = String(status || "").toLowerCase();
@@ -122,7 +122,7 @@ const StationBookingHistory = () => {
     }
   };
 
-  if (!stationId) {
+  if (!stationMasterId) {
     return (
       <div className="alert alert-warning m-3" role="alert">
         <div className="d-flex align-items-center">
