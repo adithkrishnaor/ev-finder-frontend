@@ -11,13 +11,13 @@ const Navbar = () => {
     localStorage.clear();
 
     // Redirect to login page
-    navigate("/signin");
+    navigate("/");
   };
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to="/map">
           EV App
         </Link>
         <button
