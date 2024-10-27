@@ -10,8 +10,8 @@ const Navbar = () => {
     // localStorage.removeItem("userId");
     localStorage.clear();
 
-    // Redirect to login page
-    navigate("/signin");
+    // Redirect to home
+    navigate("/");
   };
 
   return (

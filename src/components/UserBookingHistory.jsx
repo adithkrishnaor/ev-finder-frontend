@@ -61,6 +61,45 @@ const UserBookingHistory = () => {
     }
   }, [userId]);
 
+  // Add updateBookingStatus function
+  const updateBookingStatus = async (bookingId, newStatus) => {
+    try {
+      setLoading(true);
+      const response = await axios.patch(
+        `http://localhost:8080/bookings/${bookingId}/status`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.status === "success") {
+        // Update the local state to reflect the change
+        setBookings((prevBookings) =>
+          prevBookings.map((booking) =>
+            booking._id === bookingId
+              ? { ...booking, status: newStatus }
+              : booking
+          )
+        );
+        // Show success message
+        alert(`Booking ${newStatus} successfully!`);
+      } else {
+        throw new Error(
+          response.data.error || "Failed to update booking status"
+        );
+      }
+    } catch (err) {
+      console.error("Error updating booking status:", err);
+      alert(err.response?.data?.error || "Failed to update booking status");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (userId) {
       fetchUserBookings();
@@ -68,7 +107,6 @@ const UserBookingHistory = () => {
   }, [fetchUserBookings, userId]);
 
   const getStatusBadgeClass = (status) => {
-    // Ensure status is a string and handle undefined/null cases
     const safeStatus = String(status || "").toLowerCase();
 
     const classes = {
@@ -103,14 +141,80 @@ const UserBookingHistory = () => {
     }
   };
 
+  const renderBookingCard = (booking) => {
+    const bookingId = booking._id?.slice(-6) || "unknown";
+    const stationName = booking.station?.stationName || "Unknown Station";
+    const stationAddress =
+      booking.station?.stationAddress || "Address not available";
+    const bookingDate = booking.date ? new Date(booking.date) : new Date();
+
+    // Add action buttons for user
+    const renderActionButtons = () => {
+      if (booking.status === "confirmed") {
+        return (
+          <div className="d-flex gap-2 mt-3">
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => updateBookingStatus(booking._id, "cancelled")}
+              disabled={loading}
+            >
+              <i className="bi bi-x-circle me-2"></i>
+              {loading ? "Processing..." : "Cancel Booking"}
+            </button>
+          </div>
+        );
+      }
+      return null;
+    };
+
+    return (
+      <div key={booking._id} className="card mb-3 shadow-sm">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <h5 className="card-title mb-0">Booking #{bookingId}</h5>
+          <span className={getStatusBadgeClass(booking.status)}>
+            {booking.status || "Unknown"}
+          </span>
+        </div>
+        <div className="card-body">
+          <div className="mb-3">
+            <div className="d-flex align-items-center mb-2">
+              <i className="bi bi-geo-alt text-secondary me-2"></i>
+              <span className="fw-bold">{stationName}</span>
+            </div>
+            <div className="ms-4 text-secondary">{stationAddress}</div>
+          </div>
+
+          <div className="d-flex gap-4">
+            <div className="d-flex align-items-center">
+              <i className="bi bi-calendar text-secondary me-2"></i>
+              <span>{bookingDate.toLocaleDateString()}</span>
+            </div>
+            <div className="d-flex align-items-center">
+              <i className="bi bi-clock text-secondary me-2"></i>
+              <span>{bookingDate.toLocaleTimeString()}</span>
+            </div>
+          </div>
+
+          {renderActionButtons()}
+        </div>
+      </div>
+    );
+  };
+
+  // Rest of the component remains the same...
   if (!userId) {
     return (
-      <div className="alert alert-warning m-3" role="alert">
-        <div className="d-flex align-items-center">
-          <i className="bi bi-exclamation-circle me-2"></i>
-          <div>
-            <h5 className="alert-heading mb-1">Not Logged In</h5>
-            <p className="mb-0">Please log in to view your booking history.</p>
+      <div className="container">
+        <Navbar />
+        <div className="alert alert-warning m-3" role="alert">
+          <div className="d-flex align-items-center">
+            <i className="bi bi-exclamation-circle me-2"></i>
+            <div>
+              <h5 className="alert-heading mb-1">Not Logged In</h5>
+              <p className="mb-0">
+                Please log in to view your booking history.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -148,91 +252,58 @@ const UserBookingHistory = () => {
     );
   }
 
-  const renderBookingCard = (booking) => {
-    // Safely access booking properties
-    const bookingId = booking._id?.slice(-6) || "unknown";
-    const stationName = booking.station?.stationName || "Unknown Station";
-    const stationAddress =
-      booking.station?.stationAddress || "Address not available";
-    const bookingDate = booking.date ? new Date(booking.date) : new Date();
-
-    return (
-      <div key={booking._id} className="card mb-3 shadow-sm">
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <h5 className="card-title mb-0">Booking #{bookingId}</h5>
-          <span className={getStatusBadgeClass(booking.status)}>
-            {booking.status || "Unknown"}
-          </span>
-        </div>
-        <div className="card-body">
-          <div className="mb-3">
-            <div className="d-flex align-items-center mb-2">
-              <i className="bi bi-geo-alt text-secondary me-2"></i>
-              <span className="fw-bold">{stationName}</span>
-            </div>
-            <div className="ms-4 text-secondary">{stationAddress}</div>
-          </div>
-
-          <div className="d-flex gap-4">
-            <div className="d-flex align-items-center">
-              <i className="bi bi-calendar text-secondary me-2"></i>
-              <span>{bookingDate.toLocaleDateString()}</span>
-            </div>
-            <div className="d-flex align-items-center">
-              <i className="bi bi-clock text-secondary me-2"></i>
-              <span>{bookingDate.toLocaleTimeString()}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className="container py-4">
-      <h2 className="mb-4">Your Booking History</h2>
+    <div className="container">
+      <Navbar />
+      <div className="container py-4">
+        <h2 className="mb-4">Your Booking History</h2>
 
-      <ul className="nav nav-tabs mb-4">
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "all" ? "active" : ""}`}
-            onClick={() => setActiveTab("all")}
-          >
-            All Bookings
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "active" ? "active" : ""}`}
-            onClick={() => setActiveTab("active")}
-          >
-            Active
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "completed" ? "active" : ""}`}
-            onClick={() => setActiveTab("completed")}
-          >
-            Completed
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "cancelled" ? "active" : ""}`}
-            onClick={() => setActiveTab("cancelled")}
-          >
-            Cancelled
-          </button>
-        </li>
-      </ul>
+        <ul className="nav nav-tabs mb-4">
+          <li className="nav-item">
+            <button
+              className={`nav-link ${activeTab === "all" ? "active" : ""}`}
+              onClick={() => setActiveTab("all")}
+            >
+              All Bookings
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${activeTab === "active" ? "active" : ""}`}
+              onClick={() => setActiveTab("active")}
+            >
+              Active
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${
+                activeTab === "completed" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("completed")}
+            >
+              Completed
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${
+                activeTab === "cancelled" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("cancelled")}
+            >
+              Cancelled
+            </button>
+          </li>
+        </ul>
 
-      <div className="tab-content">
-        {filteredBookings().length === 0 ? (
-          <p className="text-center text-secondary py-5">No bookings found</p>
-        ) : (
-          filteredBookings().map(renderBookingCard)
-        )}
+        <div className="tab-content">
+          {filteredBookings().length === 0 ? (
+            <p className="text-center text-secondary py-5">No bookings found</p>
+          ) : (
+            filteredBookings().map(renderBookingCard)
+          )}
+        </div>
       </div>
     </div>
   );

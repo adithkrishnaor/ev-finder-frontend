@@ -82,7 +82,8 @@ const StationBookingHistory = () => {
 
   const updateBookingStatus = async (bookingId, newStatus) => {
     try {
-      await axios.patch(
+      setLoading(true);
+      const response = await axios.patch(
         `http://localhost:8080/bookings/${bookingId}/status`,
         { status: newStatus },
         {
@@ -92,11 +93,28 @@ const StationBookingHistory = () => {
           },
         }
       );
-      fetchStationBookings(); // Refresh bookings after update
-      alert(`Booking ${newStatus} successfully!`);
+
+      if (response.data.status === "success") {
+        // Update the local state to reflect the change
+        setBookings((prevBookings) =>
+          prevBookings.map((booking) =>
+            booking._id === bookingId
+              ? { ...booking, bookingStatus: newStatus }
+              : booking
+          )
+        );
+        // Show success message
+        alert(`Booking ${newStatus} successfully!`);
+      } else {
+        throw new Error(
+          response.data.error || "Failed to update booking status"
+        );
+      }
     } catch (err) {
       console.error("Error updating booking status:", err);
-      alert("Failed to update booking status");
+      alert(err.response?.data?.error || "Failed to update booking status");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,6 +138,82 @@ const StationBookingHistory = () => {
       default:
         return bookings;
     }
+  };
+
+  const renderBookingCard = (booking) => {
+    const bookingId = booking._id?.slice(-6) || "unknown";
+    const userName = booking.user?.name || "Unknown User";
+    const userEmail = booking.user?.email || "Email not available";
+    const userPhone = booking.user?.phone || "Phone not available";
+    const bookingDate = booking.bookingDate
+      ? new Date(booking.bookingDate)
+      : new Date();
+
+    const renderActionButtons = () => {
+      if (booking.bookingStatus === "confirmed") {
+        return (
+          <div className="d-flex gap-2">
+            <button
+              className="btn btn-success btn-sm"
+              onClick={() => updateBookingStatus(booking._id, "completed")}
+              disabled={loading}
+            >
+              <i className="bi bi-check-circle me-2"></i>
+              {loading ? "Processing..." : "Complete"}
+            </button>
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => updateBookingStatus(booking._id, "cancelled")}
+              disabled={loading}
+            >
+              <i className="bi bi-x-circle me-2"></i>
+              {loading ? "Processing..." : "Cancel"}
+            </button>
+          </div>
+        );
+      }
+      return null;
+    };
+
+    return (
+      <div key={booking._id} className="card mb-3 shadow-sm">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <h5 className="card-title mb-0">Booking #{bookingId}</h5>
+          <span className={getStatusBadgeClass(booking.bookingStatus)}>
+            {booking.bookingStatus || "Unknown"}
+          </span>
+        </div>
+        <div className="card-body">
+          <div className="mb-3">
+            <div className="d-flex align-items-center mb-2">
+              <i className="bi bi-person text-secondary me-2"></i>
+              <span className="fw-bold">{userName}</span>
+            </div>
+            <div className="ms-4 text-secondary">
+              <div>{userEmail}</div>
+              <div>{userPhone}</div>
+            </div>
+          </div>
+
+          <div className="d-flex gap-4 mb-3">
+            <div className="d-flex align-items-center">
+              <i className="bi bi-calendar text-secondary me-2"></i>
+              <span>{bookingDate.toLocaleDateString()}</span>
+            </div>
+            <div className="d-flex align-items-center">
+              <i className="bi bi-clock text-secondary me-2"></i>
+              <span>{booking.timeSlot}</span>
+            </div>
+            <div className="d-flex align-items-center">
+              <i className="bi bi-car-front text-secondary me-2"></i>
+              <span>{booking.vehicleNumber}</span>
+            </div>
+          </div>
+
+          {renderActionButtons()}
+        </div>
+      </div>
+    );
   };
 
   if (!stationMasterId) {
@@ -166,73 +260,6 @@ const StationBookingHistory = () => {
       </div>
     );
   }
-
-  const renderBookingCard = (booking) => {
-    const bookingId = booking._id?.slice(-6) || "unknown";
-    const userName = booking.user?.name || "Unknown User";
-    const userEmail = booking.user?.email || "Email not available";
-    const userPhone = booking.user?.phone || "Phone not available";
-    const bookingDate = booking.bookingDate
-      ? new Date(booking.bookingDate)
-      : new Date();
-
-    return (
-      <div key={booking._id} className="card mb-3 shadow-sm">
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <h5 className="card-title mb-0">Booking #{bookingId}</h5>
-          <span className={getStatusBadgeClass(booking.bookingStatus)}>
-            {booking.bookingStatus || "Unknown"}
-          </span>
-        </div>
-        <div className="card-body">
-          <div className="mb-3">
-            <div className="d-flex align-items-center mb-2">
-              <i className="bi bi-person text-secondary me-2"></i>
-              <span className="fw-bold">{userName}</span>
-            </div>
-            <div className="ms-4 text-secondary">
-              <div>{userEmail}</div>
-              <div>{userPhone}</div>
-            </div>
-          </div>
-
-          <div className="d-flex gap-4 mb-3">
-            <div className="d-flex align-items-center">
-              <i className="bi bi-calendar text-secondary me-2"></i>
-              <span>{bookingDate.toLocaleDateString()}</span>
-            </div>
-            <div className="d-flex align-items-center">
-              <i className="bi bi-clock text-secondary me-2"></i>
-              <span>{booking.timeSlot}</span>
-            </div>
-            <div className="d-flex align-items-center">
-              <i className="bi bi-car-front text-secondary me-2"></i>
-              <span>{booking.vehicleNumber}</span>
-            </div>
-          </div>
-
-          {booking.bookingStatus === "confirmed" && (
-            <div className="d-flex gap-2">
-              <button
-                className="btn btn-success btn-sm"
-                onClick={() => updateBookingStatus(booking._id, "completed")}
-              >
-                <i className="bi bi-check-circle me-2"></i>
-                Complete
-              </button>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => updateBookingStatus(booking._id, "cancelled")}
-              >
-                <i className="bi bi-x-circle me-2"></i>
-                Cancel
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="container">
