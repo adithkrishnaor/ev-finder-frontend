@@ -8,8 +8,20 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import Navbar from "./StationNavbar";
+import { useNavigate } from "react-router-dom";
 
 const AddStation = () => {
+  // Get stationMasterId from localStorage
+  const stationMasterId = localStorage.getItem("stationMasterId");
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!stationMasterId) {
+      navigate("/");
+      return;
+    }
+  });
+
   const [data, setData] = useState({
     stationName: "",
     stationAddress: "",
@@ -17,42 +29,35 @@ const AddStation = () => {
     chargingPoints: 0,
     location: null,
   });
-
   const [stations, setStations] = useState([]);
 
   const inputHandler = (event) => {
-    setData({ ...data, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    setData((prev) => ({ ...prev, [name]: value }));
   };
 
   const validateForm = () => {
-    if (!data.stationName) {
-      alert("Station Name is required.");
-      return false;
-    }
-    if (!data.stationAddress) {
-      alert("Station Address is required.");
-      return false;
-    }
-    if (!data.stationType) {
-      alert("Station Type is required.");
-      return false;
-    }
-    if (!data.chargingPoints) {
-      alert("Charging Points are required.");
-      return false;
-    }
-    if (!data.location) {
-      alert("Please select a location on the map.");
-      return false;
+    const validationRules = {
+      stationName: "Station Name is required.",
+      stationAddress: "Station Address is required.",
+      stationType: "Station Type is required.",
+      chargingPoints: "Charging Points are required.",
+      location: "Please select a location on the map.",
+    };
+
+    for (const [field, message] of Object.entries(validationRules)) {
+      if (!data[field]) {
+        alert(message);
+        return false;
+      }
     }
     return true;
   };
 
   const stationSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
+
     try {
       const response = await axios.post("http://localhost:8080/addStation", {
         ...data,
@@ -62,16 +67,18 @@ const AddStation = () => {
           coordinates: [data.location.lng, data.location.lat],
         },
       });
-      if (response.data.status === "success") {
+
+      const { status } = response.data;
+      if (status === "success") {
         alert("Station added successfully.");
-        fetchStations(); // Refresh the stations list
-      } else if (response.data.status === "Station already exists") {
+        fetchStations();
+      } else if (status === "Station already exists") {
         alert("A station already exists at this location.");
       } else {
         alert("Failed to add station.");
       }
     } catch (error) {
-      console.log("error", error);
+      console.error("Error adding station:", error);
       alert("Failed to add station.");
     }
   };
@@ -100,81 +107,89 @@ const AddStation = () => {
   }, []);
 
   return (
-    <div className="container-fluid bg-light min-vh-100 d-flex align-items-center">
-      <div className="container">
-        <Navbar />
+    <>
+      <Navbar />
+      <div className="container-fluid bg-light py-4">
         <div className="row justify-content-center">
-          <div className="col-12 col-md-8 col-lg-6">
-            <div className="card border-rounded border-secondary shadow-sm">
-              <div className="card-body p-4">
-                <h2 className="card-title text-center mb-4">Add Station</h2>
+          <div className="col-12 col-lg-10 col-xl-8">
+            <div className="card border-rounded border-secondary shadow">
+              <div className="card-body p-5">
+                <h2 className="card-title text-center mb-5">Add Station</h2>
                 <form onSubmit={stationSubmit}>
-                  <div className="mb-3">
-                    <label htmlFor="stationName" className="form-label">
-                      Station Name
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="stationName"
-                      name="stationName"
-                      value={data.stationName}
-                      onChange={inputHandler}
-                      required
-                      maxLength={25}
-                    />
+                  <div className="row">
+                    <div className="col-md-6 mb-4">
+                      <label htmlFor="stationName" className="form-label">
+                        Station Name
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="stationName"
+                        name="stationName"
+                        value={data.stationName}
+                        onChange={inputHandler}
+                        required
+                        maxLength={25}
+                      />
+                    </div>
+
+                    <div className="col-md-6 mb-4">
+                      <label htmlFor="stationType" className="form-label">
+                        Station Type
+                      </label>
+                      <select
+                        className="form-select"
+                        id="stationType"
+                        name="stationType"
+                        value={data.stationType}
+                        onChange={inputHandler}
+                        required
+                      >
+                        <option value="">Select Station Type</option>
+                        <option value="Fast Charging">Fast Charging</option>
+                        <option value="Slow Charging">Slow Charging</option>
+                      </select>
+                    </div>
                   </div>
-                  <div className="mb-3">
-                    <label htmlFor="stationAddress" className="form-label">
-                      Station Address
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="stationAddress"
-                      name="stationAddress"
-                      value={data.stationAddress}
-                      onChange={inputHandler}
-                      required
-                    />
+
+                  <div className="row">
+                    <div className="col-md-8 mb-4">
+                      <label htmlFor="stationAddress" className="form-label">
+                        Station Address
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="stationAddress"
+                        name="stationAddress"
+                        value={data.stationAddress}
+                        onChange={inputHandler}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4 mb-4">
+                      <label htmlFor="chargingPoints" className="form-label">
+                        Charging Points
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="chargingPoints"
+                        name="chargingPoints"
+                        value={data.chargingPoints}
+                        onChange={inputHandler}
+                        required
+                        min={1}
+                      />
+                    </div>
                   </div>
-                  <div className="mb-3">
-                    <label htmlFor="stationType" className="form-label">
-                      Station Type
-                    </label>
-                    <select
-                      className="form-select"
-                      id="stationType"
-                      name="stationType"
-                      value={data.stationType}
-                      onChange={inputHandler}
-                      required
-                    >
-                      <option value="">Select Station Type</option>
-                      <option value="Fast Charging">Fast Charging</option>
-                      <option value="Slow Charging">Slow Charging</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="chargingPoints" className="form-label">
-                      Charging Points
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="chargingPoints"
-                      name="chargingPoints"
-                      value={data.chargingPoints}
-                      onChange={inputHandler}
-                      required
-                      min={1}
-                    />
-                  </div>
-                  <div className="mb-3">
+
+                  <div className="mb-4">
                     <label htmlFor="location" className="form-label">
                       Location
                     </label>
-                    <div style={{ height: "400px" }}>
+                    <div style={{ height: "500px" }}>
                       <MapContainer
                         center={[9.931, 76.256]}
                         zoom={7}
@@ -210,8 +225,9 @@ const AddStation = () => {
                       </MapContainer>
                     </div>
                   </div>
-                  <div className="d-grid">
-                    <button type="submit" className="btn btn-success">
+
+                  <div className="d-grid mt-5">
+                    <button type="submit" className="btn btn-success btn-lg">
                       Add Station
                     </button>
                   </div>
@@ -221,7 +237,7 @@ const AddStation = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

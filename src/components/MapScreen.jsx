@@ -118,6 +118,12 @@ const MapScreen = () => {
   const navigate = useNavigate(); // Updated hook
 
   useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      navigate("/");
+      return;
+    }
+
     const fetchStations = async () => {
       try {
         const response = await axios.get(

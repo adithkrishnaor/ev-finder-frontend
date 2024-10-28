@@ -32,7 +32,7 @@ const StationMasterLogin = () => {
           localStorage.setItem("token", token);
           localStorage.setItem("stationMasterId", stationMasterId);
 
-          navigate("/addStation");
+          navigate("/stationMasterDashboard");
         }
       })
       .catch((error) => {

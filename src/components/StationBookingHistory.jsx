@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "./StationNavbar";
+import { useNavigate } from "react-router-dom";
 
 const StationBookingHistory = () => {
   const [bookings, setBookings] = useState([]);
@@ -10,6 +11,15 @@ const StationBookingHistory = () => {
 
   // Get stationMasterId from localStorage
   const stationMasterId = localStorage.getItem("stationMasterId");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!stationMasterId) {
+      navigate("/");
+      return;
+    }
+  });
 
   const fetchStationBookings = useCallback(async () => {
     if (!stationMasterId) {
@@ -262,7 +272,7 @@ const StationBookingHistory = () => {
   }
 
   return (
-    <div className="container">
+    <div>
       <Navbar />
       <div className="container py-4">
         <h2 className="mb-4">Station Booking History</h2>

@@ -8,6 +8,11 @@ const StationList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      navigate("/");
+      return;
+    }
     // Fetch all stations from the backend API
     const fetchStations = async () => {
       try {
@@ -28,7 +33,7 @@ const StationList = () => {
   };
 
   return (
-    <div className="container">
+    <div>
       <Navbar />
       <div className="container my-5">
         <center>
