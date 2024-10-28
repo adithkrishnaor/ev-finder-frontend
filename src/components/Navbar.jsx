@@ -36,11 +36,11 @@ const Navbar = () => {
             <Link className="nav-link active" aria-current="page" to="/map">
               Map
             </Link>
+            <Link className="nav-link" to="/stationList">
+              Stations
+            </Link>
             <Link className="nav-link" to="/userBookingHistory">
               Booking History
-            </Link>
-            <Link className="nav-link" to="#">
-              Profile
             </Link>
             <button className="nav-link btn" onClick={handleLogout}>
               Logout
