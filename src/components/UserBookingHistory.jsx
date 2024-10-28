@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "./Navbar";
+import { Link, useNavigate } from "react-router-dom";
 
 const UserBookingHistory = () => {
   const [bookings, setBookings] = useState([]);
@@ -10,9 +11,11 @@ const UserBookingHistory = () => {
 
   const userId = localStorage.getItem("userId");
 
+  const navigate = useNavigate();
+
   const fetchUserBookings = useCallback(async () => {
     if (!userId) {
-      setError("User ID is required");
+      navigate("/");
       return;
     }
 
@@ -243,6 +246,7 @@ const UserBookingHistory = () => {
               <p className="mb-0">
                 Please log in to view your booking history.
               </p>
+              <Link to="/login">Home</Link>
             </div>
           </div>
         </div>
@@ -288,7 +292,7 @@ const UserBookingHistory = () => {
   }
 
   return (
-    <div className="container">
+    <div>
       <Navbar />
       <div className="container py-4">
         <h2 className="mb-4">Your Booking History</h2>

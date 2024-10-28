@@ -11,6 +11,7 @@ import BookingForm from "./components/Booking";
 import UserBookingHistory from "./components/UserBookingHistory";
 import StationBookingHistory from "./components/StationBookingHistory";
 import StationMasterDashboard from "./components/StationMasterDashboard";
+import StationList from "./components/StationList";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           path="/stationMasterDashboard"
           element={<StationMasterDashboard />}
         />
+        <Route path="/stationList" element={<StationList />} />
       </Routes>
     </BrowserRouter>
   );

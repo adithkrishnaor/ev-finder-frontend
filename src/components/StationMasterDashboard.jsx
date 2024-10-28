@@ -11,6 +11,16 @@ const StationMasterDashboard = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Get stationMasterId from localStorage
+  const stationMasterId = localStorage.getItem("stationMasterId");
+
+  useEffect(() => {
+    if (!stationMasterId) {
+      navigate("/");
+      return;
+    }
+  });
+
   useEffect(() => {
     fetchStations();
   }, []);
@@ -67,7 +77,7 @@ const StationMasterDashboard = () => {
   }
 
   return (
-    <div className="container">
+    <div>
       <Navbar />
       <div className="container mt-5">
         <div className="row mb-4">

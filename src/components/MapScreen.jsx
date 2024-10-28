@@ -64,11 +64,12 @@ function LocationMarker({ setUserLocation }) {
   return (
     <>
       <button
+        className="btn btn-success"
         onClick={handleMoveToLocation}
         style={{
           position: "absolute",
-          top: "10px",
-          right: "20px",
+          bottom: "70px",
+          left: "20px",
           zIndex: 1000,
         }}
       >
@@ -117,6 +118,12 @@ const MapScreen = () => {
   const navigate = useNavigate(); // Updated hook
 
   useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      navigate("/");
+      return;
+    }
+
     const fetchStations = async () => {
       try {
         const response = await axios.get(
@@ -162,7 +169,7 @@ const MapScreen = () => {
   };
 
   return (
-    <div style={{ height: "90vh", width: "100vw" }}>
+    <div style={{ height: "91vh", width: "100vw" }}>
       <Navbar />
       <MapContainer
         center={[9.931, 76.256]}
@@ -176,11 +183,12 @@ const MapScreen = () => {
         />
         <LocationMarker setUserLocation={setUserLocation} />
         <button
+          className="btn btn-info"
           onClick={findNearestStation}
           style={{
             position: "absolute",
-            top: "50px",
-            right: "20px",
+            bottom: "20px",
+            left: "20px",
             zIndex: 1000,
           }}
         >
@@ -197,14 +205,14 @@ const MapScreen = () => {
               icon={stationIcon}
             >
               <Popup>
-                <h6>Station: {station.stationName}</h6>
+                <h5>Station: {station.stationName}</h5>
                 <hr />
                 Type: {station.stationType}
                 <br />
                 Address: {station.stationAddress}
                 <br />
                 Charging Points: {station.chargingPoints}
-                <br />
+                <hr />
                 <div
                   style={{
                     display: "flex",
@@ -240,28 +248,36 @@ const MapScreen = () => {
             icon={nearestStationIcon}
           >
             <Popup>
-              <strong>Nearest Station: {nearestStation.stationName}</strong>
-              <br />
+              <h5>Nearest Station: {nearestStation.stationName}</h5>
+              <hr />
               Type: {nearestStation.stationType}
               <br />
               Address: {nearestStation.stationAddress}
               <br />
               Charging Points: {nearestStation.chargingPoints}
-              <br />
-              <button
+              <hr />
+              <div
                 style={{
-                  cursor: "pointer",
-                  borderRadius: "12px",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                  border: "none",
-                  padding: "10px 20px",
-                  marginTop: "10px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-                onClick={() => handleBookNow(nearestStation)}
               >
-                Book Now
-              </button>
+                <button
+                  style={{
+                    cursor: "pointer",
+                    borderRadius: "12px",
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    border: "none",
+                    padding: "10px 20px",
+                    marginTop: "10px",
+                  }}
+                  onClick={() => handleBookNow(nearestStation)}
+                >
+                  Book Now
+                </button>
+              </div>
             </Popup>
           </Marker>
         )}
