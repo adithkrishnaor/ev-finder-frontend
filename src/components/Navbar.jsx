@@ -42,6 +42,9 @@ const Navbar = () => {
             <Link className="nav-link" to="/userBookingHistory">
               Booking History
             </Link>
+            <Link className="nav-link" to="/community">
+              Community
+            </Link>
             <button className="nav-link btn" onClick={handleLogout}>
               Logout
             </button>
