@@ -13,6 +13,7 @@ import StationBookingHistory from "./components/StationBookingHistory";
 import StationMasterDashboard from "./components/StationMasterDashboard";
 import StationList from "./components/StationList";
 import CommunityPage from "./components/CommunityPage";
+import CommunityPageStation from "./components/CommunityPageStation";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
         />
         <Route path="/stationList" element={<StationList />} />
         <Route path="/community" element={<CommunityPage />} />
+        <Route path="/communityStation" element={<CommunityPageStation />} />
       </Routes>
     </BrowserRouter>
   );

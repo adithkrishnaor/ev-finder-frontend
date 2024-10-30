@@ -34,7 +34,9 @@ const CommunityPage = () => {
 
   return (
     <div className="container my-5">
-      <h2>Community</h2>
+      <center>
+        <h2>Community Hub</h2>
+      </center>
       <div className="mb-3">
         <textarea
           className="form-control"
@@ -43,25 +45,60 @@ const CommunityPage = () => {
           value={newPost}
           onChange={(e) => setNewPost(e.target.value)}
         />
-        <button className="btn btn-primary mt-2" onClick={handleCreatePost}>
-          Post
-        </button>
+        <br />
+        <center>
+          <button className="btn btn-primary mt-2" onClick={handleCreatePost}>
+            Post
+          </button>
+        </center>
+        <hr />
       </div>
       <div>
-        {posts.map((post) => (
-          <div key={post.id} className="card mb-3">
-            <div className="card-body">
-              {post.user ? (
-                <h5 className="card-title">User: {post.user.name}</h5>
-              ) : post.stationMaster ? (
-                <h5 className="card-title">
-                  Station Master: {post.stationMaster.name}
-                </h5>
-              ) : null}
-              <p>{post.content}</p>
+        <center>
+          <h3>Previous Posts</h3>
+        </center>
+        <div className="row">
+          {posts.map((post) => (
+            <div key={post.id} className="col-md-6 col-lg-4 mb-4">
+              <div
+                className="card h-100 shadow-sm"
+                style={{ height: "300px", overflow: "hidden" }}
+              >
+                <div
+                  className="card-body d-flex flex-column"
+                  style={{ display: "flex", flexDirection: "column" }}
+                >
+                  {post.user ? (
+                    <h5 className="card-title text-primary">
+                      User: {post.user.name}
+                    </h5>
+                  ) : post.stationMaster ? (
+                    <h5 className="card-title text-success">
+                      Station Master: {post.stationMaster.fullName}
+                    </h5>
+                  ) : null}
+                  <p
+                    className="card-text flex-grow-1"
+                    style={{
+                      flexGrow: 1,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {post.content}
+                  </p>
+                  <div
+                    className="text-muted small mt-auto"
+                    style={{ marginTop: "auto" }}
+                  >
+                    {new Date(post.createdAt).toLocaleString()}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

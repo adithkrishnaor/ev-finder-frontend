@@ -46,6 +46,9 @@ const Navbar = () => {
             <Link className="nav-link" to="/stationBookingHistory">
               Station Bookings
             </Link>
+            <Link className="nav-link" to="/communityStation">
+              Community
+            </Link>
             <button className="nav-link btn" onClick={handleLogout}>
               Logout
             </button>
