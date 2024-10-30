@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./StationNavbar";
+import { useNavigate } from "react-router-dom";
 
 const CommunityPage = () => {
   const [newPost, setNewPost] = useState("");
   const [posts, setPosts] = useState([]);
 
   const stationMasterId = localStorage.getItem("stationMasterId"); // Assuming userId is stored in localStorage
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!stationMasterId) {
+      navigate("/");
+      return;
+    }
+  });
 
   const fetchPosts = async () => {
     try {
