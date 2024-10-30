@@ -12,6 +12,7 @@ import UserBookingHistory from "./components/UserBookingHistory";
 import StationBookingHistory from "./components/StationBookingHistory";
 import StationMasterDashboard from "./components/StationMasterDashboard";
 import StationList from "./components/StationList";
+import CommunityPage from "./components/CommunityPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           element={<StationMasterDashboard />}
         />
         <Route path="/stationList" element={<StationList />} />
+        <Route path="/community" element={<CommunityPage />} />
       </Routes>
     </BrowserRouter>
   );
