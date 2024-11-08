@@ -7,6 +7,7 @@ const StationMasterSignUp = () => {
     fullName: "",
     email: "",
     password: "",
+    confirmPassword: "", // Added confirm password
     phoneNumber: "",
     address: "",
     companyName: "",
@@ -35,11 +36,17 @@ const StationMasterSignUp = () => {
       !data.fullName ||
       !data.email ||
       !data.password ||
+      !data.confirmPassword || // Added check for confirm password
       !data.phoneNumber ||
       !data.address ||
       !data.companyName
     ) {
       alert("Please fill in all fields.");
+      return;
+    }
+
+    if (data.password !== data.confirmPassword) {
+      alert("Passwords do not match!");
       return;
     }
 
@@ -80,6 +87,7 @@ const StationMasterSignUp = () => {
             fullName: "",
             email: "",
             password: "",
+            confirmPassword: "", // Added confirm password
             phoneNumber: "",
             address: "",
             companyName: "",
@@ -90,6 +98,7 @@ const StationMasterSignUp = () => {
             fullName: "",
             email: "",
             password: "",
+            confirmPassword: "", // Added confirm password
             phoneNumber: "",
             address: "",
             companyName: "",
@@ -105,117 +114,117 @@ const StationMasterSignUp = () => {
   };
 
   return (
-    <div>
-      <div className="container-fluid bg-light min-vh-100 d-flex align-items-center">
-        <div className="row justify-content-center">
-          <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 d-flex justify-content-center">
-            <div className="card w-50 border-rounded border-secondary shadow-sm">
-              <div className="card-body p-4">
-                <h2 className="card-title text-center mb-4">
-                  Station Master Sign Up
-                </h2>
-                <div className="row g-3">
-                  <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <label htmlFor="" className="form-label">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="fullName"
-                      value={data.fullName}
-                      onChange={inputHandler}
-                      maxLength={25}
-                      required
-                    />
-                  </div>
-                  <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <label htmlFor="" className="form-label">
-                      Address
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="address"
-                      value={data.address}
-                      onChange={inputHandler}
-                      maxLength={30}
-                      required
-                    />
-                  </div>
-                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                    <label htmlFor="" className="form-label">
-                      Company Name
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="companyName"
-                      value={data.companyName}
-                      onChange={inputHandler}
-                      maxLength={30}
-                      required
-                    />
-                  </div>
-                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                    <label htmlFor="" className="form-label">
-                      Phone Number
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      name="phoneNumber"
-                      value={data.phoneNumber}
-                      onChange={inputHandler}
-                      required
-                    />
-                  </div>
-                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                    <label htmlFor="" className="form-label">
-                      Email
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="email"
-                      value={data.email}
-                      onChange={inputHandler}
-                      maxLength={30}
-                      required
-                    />
-                  </div>
-                  <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                    <label htmlFor="" className="form-label">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      name="password"
-                      value={data.password}
-                      onChange={inputHandler}
-                      maxLength={25}
-                      required
-                    />
-                  </div>
+    <div className="row g-3">
+      <div className="col col-12">
+        <label htmlFor="" className="form-label">
+          Full Name
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          name="fullName"
+          value={data.fullName}
+          onChange={inputHandler}
+          maxLength={25}
+          required
+        />
+      </div>
+      <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+        <label htmlFor="" className="form-label">
+          Address
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          name="address"
+          value={data.address}
+          onChange={inputHandler}
+          maxLength={30}
+          required
+        />
+      </div>
+      <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+        <label htmlFor="" className="form-label">
+          Company Name
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          name="companyName"
+          value={data.companyName}
+          onChange={inputHandler}
+          maxLength={30}
+          required
+        />
+      </div>
+      <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+        <label htmlFor="" className="form-label">
+          Phone Number
+        </label>
+        <input
+          type="number"
+          className="form-control"
+          name="phoneNumber"
+          value={data.phoneNumber}
+          onChange={inputHandler}
+          required
+        />
+      </div>
+      <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+        <label htmlFor="" className="form-label">
+          Email
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          name="email"
+          value={data.email}
+          onChange={inputHandler}
+          maxLength={30}
+          required
+        />
+      </div>
+      <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+        <label htmlFor="" className="form-label">
+          Password
+        </label>
+        <input
+          type="password"
+          className="form-control"
+          name="password"
+          value={data.password}
+          onChange={inputHandler}
+          maxLength={25}
+          required
+        />
+      </div>
 
-                  <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <center>
-                      <button className="btn btn-primary" onClick={readValue}>
-                        Signup
-                      </button>
-                    </center>
-                  </div>
-                  <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <center>
-                      <Link to="/stationLogin">Existing user? Login Here</Link>
-                    </center>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+        <label htmlFor="" className="form-label">
+          Confirm Password
+        </label>
+        <input
+          type="password"
+          className="form-control"
+          name="confirmPassword"
+          value={data.confirmPassword}
+          onChange={inputHandler}
+          maxLength={25}
+          required
+        />
+      </div>
+
+      <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+        <center>
+          <button className="btn btn-primary" onClick={readValue}>
+            Signup
+          </button>
+        </center>
+      </div>
+      <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+        <center>
+          <Link to="/login">Existing user? Login Here</Link>
+        </center>
       </div>
     </div>
   );
