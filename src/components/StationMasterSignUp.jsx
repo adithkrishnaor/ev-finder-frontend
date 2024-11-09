@@ -114,7 +114,7 @@ const StationMasterSignUp = () => {
   };
 
   return (
-    <div className="row g-3">
+    <div className="row g-2">
       <div className="col col-12">
         <label htmlFor="" className="form-label">
           Full Name
@@ -214,17 +214,13 @@ const StationMasterSignUp = () => {
         />
       </div>
 
-      <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-        <center>
-          <button className="btn btn-primary" onClick={readValue}>
-            Signup
-          </button>
-        </center>
-      </div>
-      <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-        <center>
+      <div className="col-12 text-center mt-3">
+        <button className="btn btn-primary px-4" onClick={readValue}>
+          Signup
+        </button>
+        <div className="mt-2">
           <Link to="/login">Existing user? Login Here</Link>
-        </center>
+        </div>
       </div>
     </div>
   );
