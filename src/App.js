@@ -14,17 +14,19 @@ import StationMasterDashboard from "./components/StationMasterDashboard";
 import StationList from "./components/StationList";
 import CommunityPage from "./components/CommunityPage";
 import CommunityPageStation from "./components/CommunityPageStation";
+import CombinedSignup from "./components/CombinedSignup";
+import Login from "./components/Login";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/" element={<CombinedSignup />} />
+        <Route path="/login" element={<Login />} />
+        {/* <Route path="/signup" element={<SignUp />} /> */}
         <Route path="/map" element={<MapScreen />} />
-        <Route path="/stationSignUp" element={<StationMasterSignUp />} />
-        <Route path="/stationLogin" element={<StationMasterLogin />} />
+        {/* <Route path="/stationSignUp" element={<StationMasterSignUp />} /> */}
+        {/* <Route path="/stationLogin" element={<StationMasterLogin />} /> */}
         <Route path="/addStation" element={<AddStation />} />
         <Route path="/booking" element={<BookingForm />} />
         <Route path="/userBookingHistory" element={<UserBookingHistory />} />
